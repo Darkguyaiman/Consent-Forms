@@ -17,25 +17,34 @@ function saveTestimonialConsentForm(formData) {
     }
 
     if (sheet.getLastRow() === 0) {
-      sheet.getRange(1, 1, 1, 6).setValues([[
+      sheet.getRange(1, 1, 1, 7).setValues([[
         'Timestamp', 'Patient Name', 'Contact No.', 'Photo/Video Permission',
-        'Acknowledgement Consent', 'Patient Signature Link'
+        'Acknowledgement Consent', 'Patient Signature Link', 'PDF Link'
       ]]);
     }
 
-    const driveId = '1exjWvrHNGaOyio7Moxum0-u0olyHKRMk';
-    const folder = DriveApp.getFolderById(driveId);
+    const folderId = '1exjWvrHNGaOyio7Moxum0-u0olyHKRMk';
+    const folder = DriveApp.getFolderById(folderId);
 
     const patientBase64Data = formData.patientSignature.split(',')[1];
     const patientBlob = Utilities.newBlob(
       Utilities.base64Decode(patientBase64Data),
       'image/png',
-      `patient_signature_${formData.patientName.replace(/\s+/g, '_')}_${new Date().getTime()}.png`
+      `patient_signature_${formData.patientName.replace(/\s+/g, '_')}_${Date.now()}.png`
     );
-
     const patientFile = folder.createFile(patientBlob);
-    const patientFileId = patientFile.getId();
-    const patientFileUrl = `https://drive.google.com/thumbnail?id=${patientFileId}&sz=s4000`;
+    const patientFileUrl = `https://drive.google.com/thumbnail?id=${patientFile.getId()}&sz=s4000`;
+
+    let pdfFileUrl = '';
+    if (formData.pdfBase64) {
+      const pdfBlob = Utilities.newBlob(
+        Utilities.base64Decode(formData.pdfBase64),
+        'application/pdf',
+        `Testimonial_Consent_${formData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+      );
+      const pdfFile = folder.createFile(pdfBlob);
+      pdfFileUrl = `https://drive.google.com/file/d/${pdfFile.getId()}/view?usp=sharing`;
+    }
 
     sheet.appendRow([
       new Date(),
@@ -43,13 +52,15 @@ function saveTestimonialConsentForm(formData) {
       formData.contactNo || '',
       formData.photoVideoPermission ? 'Yes' : 'No',
       formData.acknowledgementConsent ? 'Yes' : 'No',
-      patientFileUrl
+      patientFileUrl,
+      pdfFileUrl
     ]);
 
     return {
       success: true,
       message: 'Form submitted successfully',
-      patientFileUrl: patientFileUrl
+      patientFileUrl: patientFileUrl,
+      pdfFileUrl: pdfFileUrl
     };
 
   } catch (error) {

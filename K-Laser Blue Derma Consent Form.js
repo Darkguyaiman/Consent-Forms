@@ -6,7 +6,7 @@ function doGet() {
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
-function saveConsentForm(formData) {
+function saveTreatmentConsentForm(formData) {
   try {
     const sheetName = 'K-Laser Blue Derma Consent Form';
     const ss = SpreadsheetApp.getActiveSpreadsheet();

@@ -17,10 +17,10 @@ function saveTreatmentConsentForm(formData) {
     }
 
     if (sheet.getLastRow() === 0) {
-      sheet.getRange(1, 1, 1, 8).setValues([[
+      sheet.getRange(1, 1, 1, 9).setValues([[
         'Timestamp', 'Patient Name', 'IC/Passport Number', 'Date of Birth',
         'Date of Procedure', 'Practitioner Name', 'Patient Signature Link', 
-        'Practitioner Signature Link'
+        'Practitioner Signature Link', 'Consent PDF Link'
       ]]);
     }
 
@@ -33,10 +33,8 @@ function saveTreatmentConsentForm(formData) {
       'image/png',
       `patient_signature_${formData.patientName.replace(/\s+/g, '_')}_${new Date().getTime()}.png`
     );
-
     const patientFile = folder.createFile(patientBlob);
-    const patientFileId = patientFile.getId();
-    const patientFileUrl = `https://drive.google.com/thumbnail?id=${patientFileId}&sz=s4000`;
+    const patientFileUrl = `https://drive.google.com/thumbnail?id=${patientFile.getId()}&sz=s4000`;
 
     let practitionerFileUrl = '';
     if (formData.practitionerSignature) {
@@ -46,10 +44,20 @@ function saveTreatmentConsentForm(formData) {
         'image/png',
         `practitioner_signature_${formData.practitionerName.replace(/\s+/g, '_')}_${new Date().getTime()}.png`
       );
-
       const practitionerFile = folder.createFile(practitionerBlob);
-      const practitionerFileId = practitionerFile.getId();
-      practitionerFileUrl = `https://drive.google.com/thumbnail?id=${practitionerFileId}&sz=s4000`;
+      practitionerFileUrl = `https://drive.google.com/thumbnail?id=${practitionerFile.getId()}&sz=s4000`;
+    }
+
+    let pdfFileUrl = '';
+    if (formData.pdfFile) {
+      const pdfBase64Data = formData.pdfFile.split(',')[1];
+      const pdfBlob = Utilities.newBlob(
+        Utilities.base64Decode(pdfBase64Data),
+        'application/pdf',
+        `ConsentForm_${formData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+      );
+      const pdfFile = folder.createFile(pdfBlob);
+      pdfFileUrl = `https://drive.google.com/file/d/${pdfFile.getId()}/view?usp=sharing`;
     }
 
     sheet.appendRow([
@@ -60,14 +68,14 @@ function saveTreatmentConsentForm(formData) {
       formData.dateOfProcedure,
       formData.practitionerName,
       patientFileUrl,
-      practitionerFileUrl
+      practitionerFileUrl,
+      pdfFileUrl
     ]);
 
     return {
       success: true,
       message: 'Form submitted successfully',
-      patientFileUrl: patientFileUrl,
-      practitionerFileUrl: practitionerFileUrl
+      pdfFileUrl: pdfFileUrl
     };
 
   } catch (error) {
@@ -75,4 +83,5 @@ function saveTreatmentConsentForm(formData) {
     throw new Error('Failed to save form: ' + error.toString());
   }
 }
+
 

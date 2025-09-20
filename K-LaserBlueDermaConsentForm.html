@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Laser Blue Derma Consent Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-red: #c53e5c;
+            --secondary-red: #a8334a;
+            --light-red: #f8e8ec;
+            --dark-gray: #2d3748;
+            --medium-gray: #718096;
+            --light-gray: #e2e8f0;
+            --white: #ffffff;
+            --success-green: #48bb78;
+            --warning-orange: #ed8936;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9f9f3;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+            color: var(--white);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .procedure-info {
+            background: var(--light-red);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-red);
+        }
+
+        .procedure-info h2 {
+            color: var(--primary-red);
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .procedure-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .procedure-info li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .procedure-info li::before {
+            content: '✓';
+            color: var(--success-green);
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group label .icon {
+            color: var(--medium-gray);
+            font-size: 16px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(197, 62, 92, 0.1);
+        }
+
+        .form-group input:valid {
+            border-color: var(--success-green);
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .checkbox-item:hover {
+            background: var(--light-red);
+            border-color: var(--primary-red);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .signature-section {
+            margin-top: 24px;
+        }
+
+        .signature-container {
+            border: 2px dashed var(--medium-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            background: #fafafa;
+            transition: var(--transition);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .signature-controls {
+            margin-top: 15px;
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .signature-container {
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .signature-controls {
+                display: none;
+                justify-content: center;
+                width: auto;
+            }
+        }
+
+        .signature-container:hover {
+            border-color: var(--primary-red);
+            background: var(--light-red);
+        }
+
+        .signature-placeholder {
+            color: var(--medium-gray);
+            font-size: 14px;
+        }
+
+        .signature-canvas {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            cursor: crosshair;
+            background: var(--white);
+            display: none;
+            width: 100%;       
+            max-width: 400px;   
+            height: 150px;
+            margin-bottom: 10px;
+        }
+
+        .mobile-signature-hint {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #1976d2;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(197, 62, 92, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(197, 62, 92, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--dark-gray);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+        }
+
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 2px solid var(--light-gray);
+        }
+
+        @media (min-width: 640px) {
+            .form-actions {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.8);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .section-title {
+            color: var(--primary-red);
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-red);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .clinician-section {
+            background: #f0f8ff;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-top: 30px;
+            border-left: 5px solid #2196f3;
+        }
+
+        .consent-sections {
+            margin-bottom: 30px;
+        }
+
+        .consent-section {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border-left: 5px solid var(--primary-red);
+        }
+
+        .consent-section h2 {
+            color: var(--primary-red);
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .consent-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .consent-section li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .consent-section li::before {
+            content: '✓';
+            color: var(--success-green);
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        @media print {
+          .header {
+              background: #c53e5c !important;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+          }
+          
+          .consent-section {
+              break-inside: avoid;
+          }
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Informed Consent for Non-Surgical Blepharoplasty using K-Laser Blue Derma</h1>
+        </div>
+
+        <div class="content">
+                        <div class="consent-sections">
+                <div class="consent-section">
+                    <h2><i class="fas fa-info-circle"></i> 1. PROCEDURE DESCRIPTION</h2>
+                    <p>I understand that I am undergoing a non-surgical blepharoplasty using the K Laser Blue Derma device, a diode-based laser designed for aesthetic skin resurfacing, tightening, and rejuvenation.</p>
+                    <p>This procedure involves the use of a 445nm blue laser to induce controlled photothermal effects on the periorbital skin to:</p>
+                    <ul>
+                        <li>Tighten the upper and/or lower eyelid skin</li>
+                        <li>Reduce eyelid crepiness or hooding</li>
+                        <li>Improve the appearance of eye bags and fine wrinkles</li>
+                    </ul>
+                    <p>This procedure is non-invasive and is performed without incisions or general anesthesia.</p>
+                </div>
+
+                <div class="consent-section">
+                    <h2><i class="fas fa-bullseye"></i> 2. INDICATIONS</h2>
+                    <p>This treatment is intended for:</p>
+                    <ul>
+                        <li>Mild to moderate eyelid laxity or sagging</li>
+                        <li>Fine lines or crepiness around the eyes</li>
+                        <li>Patients seeking non-surgical alternatives to blepharoplasty</li>
+                    </ul>
+                </div>
+
+                <div class="consent-section">
+                    <h2><i class="fas fa-exchange-alt"></i> 3. ALTERNATIVE OPTIONS</h2>
+                    <p>I have been informed of alternative treatments, which may include:</p>
+                    <ul>
+                        <li>Surgical blepharoplasty</li>
+                        <li>Radiofrequency skin tightening</li>
+                        <li>CO₂/Er:YAG laser resurfacing</li>
+                        <li>Topical treatments or injectables</li>
+                    </ul>
+                    <p>I understand that the choice of treatment depends on my skin condition, medical history, and desired outcome.</p>
+                </div>
+
+                <div class="consent-section">
+                    <h2><i class="fas fa-exclamation-triangle"></i> 4. RISKS AND POSSIBLE COMPLICATIONS</h2>
+                    <p>I understand that although the K Laser Blue Derma is generally safe and well-tolerated, potential side effects and complications may include:</p>
+                    <ul>
+                        <li>Mild to moderate erythema (redness) and edema (swelling)</li>
+                        <li>Transient dryness or flaking of treated skin</li>
+                        <li>Temporary hyperpigmentation or hypopigmentation</li>
+                        <li>Eye discomfort if not properly shielded (protective goggles will be provided)</li>
+                        <li>Blistering or superficial burns (rare)</li>
+                        <li>Scarring (extremely rare with proper technique)</li>
+                    </ul>
+                    <p>I understand that results may vary, and multiple sessions may be required for optimal outcomes.</p>
+                </div>
+
+                <div class="consent-section">
+                    <h2><i class="fas fa-ban"></i> 5. CONTRAINDICATIONS</h2>
+                    <p>I confirm that I do NOT have any of the following (or have disclosed if I do):</p>
+                    <ul>
+                        <li>Active skin infection or open wounds in the treatment area</li>
+                        <li>Recent sunburn or photosensitivity</li>
+                        <li>History of keloids or poor wound healing</li>
+                        <li>Ocular disease or recent eye surgery</li>
+                        <li>Pregnancy or breastfeeding</li>
+                        <li>Use of isotretinoin within the past 6 months</li>
+                    </ul>
+                </div>
+
+                <div class="consent-section">
+                    <h2><i class="fas fa-clipboard-list"></i> 6. PRE- AND POST-TREATMENT INSTRUCTIONS</h2>
+                    <p>I have been advised to:</p>
+                    <ul>
+                        <li>Avoid sun exposure and use sun protection before and after treatment</li>
+                        <li>Follow specific aftercare instructions provided by the practitioner</li>
+                        <li>Avoid applying active skincare products (e.g., acids, retinoids) around the eyes for 3–5 days post-treatment</li>
+                    </ul>
+                </div>
+
+                <div class="consent-section">
+                    <h2><i class="fas fa-question-circle"></i> 7. NO GUARANTEE OF RESULTS</h2>
+                    <p>I understand that while the K Laser Blue Derma has demonstrated effectiveness in clinical practice, results may vary based on my skin type, age, lifestyle, and compliance with aftercare. There is no guarantee of specific outcomes, and repeat treatments may be needed.</p>
+                </div>
+
+                <div class="consent-section">
+                    <h2><i class="fas fa-check-circle"></i> 8. VOLUNTARY CONSENT</h2>
+                    <p>I have had the opportunity to ask questions about the procedure, risks, alternatives, and expected outcomes. I understand the information presented to me and voluntarily consent to proceed with the non-surgical blepharoplasty using K Laser Blue Derma.</p>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <form id="consentForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="patientName">
+                                <i class="fas fa-user icon"></i>
+                                Patient Name
+                            </label>
+                            <input type="text" id="patientName" name="patientName" required placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="icPassport">
+                                <i class="fas fa-id-card icon"></i>
+                                IC/Passport Number
+                            </label>
+                            <input type="text" id="icPassport" name="icPassport" required placeholder="Enter your IC or Passport number">
+                        </div>
+
+                                                <div class="form-group">
+                            <label for="dateOfBirth">
+                                <i class="fas fa-birthday-cake icon"></i>
+                                Date of Birth
+                            </label>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                        </div>
+
+                                                <div class="form-group">
+                            <label for="dateOfProcedure">
+                                <i class="fas fa-calendar-check icon"></i>
+                                Date of Procedure
+                            </label>
+                            <input type="date" id="dateOfProcedure" name="dateOfProcedure" required>
+                        </div>
+                    </div>
+
+                                        <div class="form-group full-width signature-section">
+                        <label>
+                            <i class="fas fa-signature icon"></i>
+                            Patient Digital Signature
+                        </label>
+                        <p style="margin-bottom: 15px; color: var(--medium-gray);">I acknowledge that I have read and understood this consent form.</p>
+                        <div class="mobile-signature-hint">
+                            <i class="fas fa-mobile-alt" style="margin-right: 8px;"></i>
+                            <strong>Mobile Tip:</strong> Use your finger to sign. The signature area is optimized for touch.
+                        </div>
+                        <div class="signature-container" id="patientSignatureContainer">
+                            <div class="signature-placeholder" id="patientSignaturePlaceholder">
+                                <i class="fas fa-pen-nib" style="font-size: 24px; color: var(--medium-gray); margin-bottom: 8px;"></i>
+                                <p>Please sign in the box below</p>
+                            </div>
+                            <canvas id="patientSignatureCanvas" class="signature-canvas" width="400" height="150"></canvas>
+                            <div class="signature-controls">
+                                <button type="button" class="btn btn-secondary" onclick="clearPatientSignature()">
+                                    <i class="fas fa-eraser"></i>
+                                    Clear Signature
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                                        <div class="clinician-section">
+                        <div class="section-title">
+                            <i class="fas fa-user-md"></i>
+                            Clinician Declaration
+                        </div>
+                        <p style="margin-bottom: 20px; color: var(--medium-gray);">I confirm that I have explained the procedure, risks, and alternatives to the patient and have answered all related questions.</p>
+                        
+                        <div class="form-group">
+                            <label for="practitionerName">
+                                <i class="fas fa-user-md icon"></i>
+                                Practitioner Name
+                            </label>
+                            <input type="text" id="practitionerName" name="practitionerName" required placeholder="Enter practitioner's full name">
+                        </div>
+
+                        <div class="form-group full-width signature-section">
+                            <label>
+                                <i class="fas fa-signature icon"></i>
+                                Practitioner Digital Signature
+                            </label>
+                            <div class="signature-container" id="practitionerSignatureContainer">
+                                <div class="signature-placeholder" id="practitionerSignaturePlaceholder">
+                                    <i class="fas fa-pen-nib" style="font-size: 24px; color: var(--medium-gray); margin-bottom: 8px;"></i>
+                                    <p>Practitioner signature required</p>
+                                </div>
+                                <canvas id="practitionerSignatureCanvas" class="signature-canvas" width="400" height="150"></canvas>
+                                <div class="signature-controls">
+                                    <button type="button" class="btn btn-secondary" onclick="clearPractitionerSignature()">
+                                        <i class="fas fa-eraser"></i>
+                                        Clear Signature
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" onclick="submitForm()" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Form
+                </button>
+            </div>
+        </div>
+    </div>
+
+        <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div id="modalContent">
+                <i class="fas fa-check-circle" style="font-size: 48px; color: var(--success-green); margin-bottom: 20px;"></i>
+                <h3>Form Submitted Successfully!</h3>
+                <p>Your consent form has been saved and you can now download a PDF copy.</p>
+                <button class="btn btn-primary" onclick="closeModal()" style="margin-top: 20px;">
+                    <i class="fas fa-times"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let patientSignaturePad = null;
+        let practitionerSignaturePad = null;
+        let isPatientSigned = false;
+        let isPractitionerSigned = false;
+        let storedFormData = null;
+
+
+        function initializeSignaturePads() {
+
+            const patientCanvas = document.getElementById('patientSignatureCanvas');
+            const patientContainer = document.getElementById('patientSignatureContainer');
+            const patientPlaceholder = document.getElementById('patientSignaturePlaceholder');
+            
+            patientContainer.addEventListener('click', function() {
+                patientPlaceholder.style.display = 'none';
+                patientCanvas.style.display = 'block';
+                patientCanvas.parentElement.querySelector('.signature-controls').style.display = 'block';
+                initPatientSignature();
+            });
+
+
+            const practitionerCanvas = document.getElementById('practitionerSignatureCanvas');
+            const practitionerContainer = document.getElementById('practitionerSignatureContainer');
+            const practitionerPlaceholder = document.getElementById('practitionerSignaturePlaceholder');
+            
+            practitionerContainer.addEventListener('click', function() {
+                practitionerPlaceholder.style.display = 'none';
+                practitionerCanvas.style.display = 'block';
+                practitionerCanvas.parentElement.querySelector('.signature-controls').style.display = 'block';
+                initPractitionerSignature();
+            });
+        }
+
+        function initPatientSignature() {
+            if (patientSignaturePad) return;
+            
+            const canvas = document.getElementById('patientSignatureCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            function startDrawing(e) {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                if (e.type === 'mousedown') {
+                    lastX = (e.clientX - rect.left) * scaleX;
+                    lastY = (e.clientY - rect.top) * scaleY;
+                } else if (e.type === 'touchstart') {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    lastX = (touch.clientX - rect.left) * scaleX;
+                    lastY = (touch.clientY - rect.top) * scaleY;
+                }
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                let currentX, currentY;
+                
+                if (e.type === 'mousemove') {
+                    currentX = (e.clientX - rect.left) * scaleX;
+                    currentY = (e.clientY - rect.top) * scaleY;
+                } else if (e.type === 'touchmove') {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    currentX = (touch.clientX - rect.left) * scaleX;
+                    currentY = (touch.clientY - rect.top) * scaleY;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.strokeStyle = '#2d3748';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                lastX = currentX;
+                lastY = currentY;
+                isPatientSigned = true;
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+
+            patientSignaturePad = { canvas, ctx };
+        }
+
+        function initPractitionerSignature() {
+            if (practitionerSignaturePad) return;
+            
+            const canvas = document.getElementById('practitionerSignatureCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            function startDrawing(e) {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                if (e.type === 'mousedown') {
+                    lastX = (e.clientX - rect.left) * scaleX;
+                    lastY = (e.clientY - rect.top) * scaleY;
+                } else if (e.type === 'touchstart') {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    lastX = (touch.clientX - rect.left) * scaleX;
+                    lastY = (touch.clientY - rect.top) * scaleY;
+                }
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                
+                let currentX, currentY;
+                
+                if (e.type === 'mousemove') {
+                    currentX = (e.clientX - rect.left) * scaleX;
+                    currentY = (e.clientY - rect.top) * scaleY;
+                } else if (e.type === 'touchmove') {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    currentX = (touch.clientX - rect.left) * scaleX;
+                    currentY = (touch.clientY - rect.top) * scaleY;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.strokeStyle = '#2d3748';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                lastX = currentX;
+                lastY = currentY;
+                isPractitionerSigned = true;
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('touchstart', startDrawing);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDrawing);
+
+            practitionerSignaturePad = { canvas, ctx };
+        }
+
+        function clearPatientSignature() {
+            if (patientSignaturePad) {
+                patientSignaturePad.ctx.clearRect(0, 0, patientSignaturePad.canvas.width, patientSignaturePad.canvas.height);
+                isPatientSigned = false;
+            }
+        }
+
+        function clearPractitionerSignature() {
+            if (practitionerSignaturePad) {
+                practitionerSignaturePad.ctx.clearRect(0, 0, practitionerSignaturePad.canvas.width, practitionerSignaturePad.canvas.height);
+                isPractitionerSigned = false;
+            }
+        }
+
+        function validateForm() {
+            const requiredFields = [
+                'patientName', 'icPassport', 'dateOfBirth', 'dateOfProcedure', 
+                'practitionerName'
+            ];
+            
+
+            for (let field of requiredFields) {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    alert(`Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                    element.focus();
+                    return false;
+                }
+            }
+
+
+            if (!isPatientSigned) {
+                alert('Please provide your digital signature');
+                return false;
+            }
+
+            if (!isPractitionerSigned) {
+                alert('Practitioner signature is required');
+                return false;
+            }
+
+            return true;
+        }
+
+        async function submitForm() {
+            if (!validateForm()) return;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
+            submitBtn.disabled = true;
+
+            try {
+                // Store form data before resetting
+                storedFormData = {
+                    patientName: document.getElementById('patientName').value,
+                    icPassport: document.getElementById('icPassport').value,
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    dateOfProcedure: document.getElementById('dateOfProcedure').value,
+                    practitionerName: document.getElementById('practitionerName').value,
+                    patientSignature: document.getElementById('patientSignatureCanvas').toDataURL(),
+                    practitionerSignature: document.getElementById('practitionerSignatureCanvas').toDataURL(),
+                };
+
+                const result = await new Promise((resolve, reject) => {
+                    google.script.run
+                        .withSuccessHandler(resolve)
+                        .withFailureHandler(reject)
+                        .saveConsentForm(storedFormData);
+                });
+
+                if (result.success) {
+                    showModal('success', 'Form Submitted Successfully!', 'Your consent form has been saved. You can now download a PDF copy.');
+
+                    // Reset form after storing data
+                    document.getElementById('consentForm').reset();
+                    clearPatientSignature();
+                    clearPractitionerSignature();
+
+                    document.getElementById('patientSignaturePlaceholder').style.display = 'block';
+                    document.getElementById('patientSignatureCanvas').style.display = 'none';
+                    document.getElementById('patientSignatureCanvas').parentElement.querySelector('.signature-controls').style.display = 'none';
+
+                    document.getElementById('practitionerSignaturePlaceholder').style.display = 'block';
+                    document.getElementById('practitionerSignatureCanvas').style.display = 'none';
+                    document.getElementById('practitionerSignatureCanvas').parentElement.querySelector('.signature-controls').style.display = 'none';
+
+                    isPatientSigned = false;
+                    isPractitionerSigned = false;
+                } else {
+                    throw new Error(result.message || 'Unknown error occurred');
+                }
+
+            } catch (error) {
+                console.error('Submission error:', error);
+                showModal('error', 'Submission Failed', 'There was an error submitting your form. Please try again.');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function downloadPDF() {
+            if (!storedFormData) {
+                alert('No form data available to download');
+                return;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const margin = 20;
+            let yPos = margin;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const contentWidth = pageWidth - (margin * 2);
+            const imgWidth = 80;
+            const imgHeight = 30;
+            
+            doc.setFillColor(197, 62, 92);
+            doc.rect(0, 0, pageWidth, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('K-Laser Blue Derma', pageWidth / 2, 15, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.text('Informed Consent for Non-Surgical Blepharoplasty', pageWidth / 2, 25, { align: 'center' });
+            
+            yPos = 50;
+            
+            doc.setTextColor(197, 62, 92);
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Patient Information', margin, yPos);
+            yPos += 10;
+            
+            doc.setDrawColor(197, 62, 92);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 15;
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            
+            // Use stored data instead of form fields
+            doc.text(`Patient Name: ${storedFormData.patientName}`, margin, yPos); yPos += 8;
+            doc.text(`IC/Passport Number: ${storedFormData.icPassport}`, margin, yPos); yPos += 8;
+            doc.text(`Date of Birth: ${storedFormData.dateOfBirth}`, margin, yPos); yPos += 8;
+            doc.text(`Date of Procedure: ${storedFormData.dateOfProcedure}`, margin, yPos); yPos += 20;
+            
+            const consentSections = document.querySelectorAll('.consent-section');
+            
+            consentSections.forEach((section) => {
+                if (yPos > 240) {
+                    doc.addPage();
+                    yPos = margin;
+                }
+                
+                const title = section.querySelector('h2').textContent;
+                const content = section.querySelectorAll('p, li');
+                
+                doc.setTextColor(197, 62, 92);
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text(title, margin, yPos);
+                yPos += 8;
+                
+                doc.setFillColor(248, 232, 236);
+                doc.rect(margin, yPos - 2, contentWidth, 1, 'F');
+                yPos += 10;
+                
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+                doc.setFont(undefined, 'normal');
+                
+                content.forEach(element => {
+                    if (element.tagName === 'P') {
+                        const text = element.textContent;
+                        const splitText = doc.splitTextToSize(text, contentWidth);
+                        
+                        if (yPos + (splitText.length * 5) > 270) {
+                            doc.addPage();
+                            yPos = margin;
+                        }
+                        
+                        splitText.forEach(line => {
+                            doc.text(line, margin + 2, yPos);
+                            yPos += 5;
+                        });
+                        yPos += 3;
+                    } else if (element.tagName === 'LI') {
+                        let text = '• ' + element.textContent.replace(/CO₂/g, "CO2").replace(/Er:YAG/g, "Er:YAG");
+                        const splitText = doc.splitTextToSize(text, contentWidth - 10);
+                        
+                        if (yPos + (splitText.length * 5) > 270) {
+                            doc.addPage();
+                            yPos = margin;
+                        }
+                        
+                        splitText.forEach((line, i) => {
+                            doc.text(line, margin + (i === 0 ? 5 : 10), yPos);
+                            yPos += 5;
+                        });
+                        yPos += 2;
+                    }
+                });
+                
+                yPos += 10;
+            });
+            
+            if (yPos > 200) {
+                doc.addPage();
+                yPos = margin;
+            }
+            
+            doc.setTextColor(197, 62, 92);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Patient Acknowledgement', margin, yPos);
+            yPos += 10;
+            
+            doc.setDrawColor(197, 62, 92);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 15;
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.text('I acknowledge that I have read and understood this consent form.', margin, yPos);
+            yPos += 10;
+            
+            // Use stored signature data
+            if (storedFormData.patientSignature) {
+                doc.addImage(storedFormData.patientSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
+                yPos += imgHeight + 5;
+            } else {
+                doc.text("[No patient signature provided]", margin, yPos);
+                yPos += 20;
+            }
+            
+            doc.text(`Patient Name: ${storedFormData.patientName}`, margin, yPos); yPos += 6;
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, yPos); yPos += 20;
+            
+            if (yPos > 200) {
+                doc.addPage();
+                yPos = margin;
+            }
+            
+            doc.setTextColor(197, 62, 92);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Clinician Declaration', margin, yPos);
+            yPos += 10;
+            
+            doc.setDrawColor(197, 62, 92);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 15;
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.text('I confirm that I have explained the procedure, risks, and alternatives', margin, yPos);
+            yPos += 6;
+            doc.text('to the patient and have answered all related questions.', margin, yPos);
+            yPos += 10;
+            
+            // Use stored signature data
+            if (storedFormData.practitionerSignature) {
+                doc.addImage(storedFormData.practitionerSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
+                yPos += imgHeight + 5;
+            } else {
+                doc.text("[No practitioner signature provided]", margin, yPos);
+                yPos += 20;
+            }
+            
+            doc.text(`Practitioner Name: ${storedFormData.practitionerName}`, margin, yPos);
+            yPos += 6;
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, yPos);
+            
+            const footerY = doc.internal.pageSize.getHeight() - 10;
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(8);
+            doc.text('Generated on ' + new Date().toLocaleString(), pageWidth / 2, footerY, { align: 'center' });
+            
+            const fileName = `K-Laser_Consent_${storedFormData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+        }
+
+        function showModal(type, title, message) {
+            const modal = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            
+            const icon = type === 'success' ? 
+                '<i class="fas fa-check-circle" style="font-size: 48px; color: var(--success-green); margin-bottom: 20px;"></i>' :
+                '<i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--warning-orange); margin-bottom: 20px;"></i>';
+            
+                  content.innerHTML = `
+                      ${icon}
+                      <h3>${title}</h3>
+                      <p>${message}</p>
+                      ${type === 'success' ? `
+                          <button class="btn btn-success" onclick="downloadPDF()" style="margin-top: 20px;">
+                              <i class="fas fa-download"></i>
+                              Download PDF Copy
+                          </button>
+                      ` : ''}
+                      <button class="btn btn-primary" onclick="closeModal()" style="margin-top: 10px;">
+                          <i class="fas fa-times"></i>
+                          Close
+                      </button>
+                  `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSignaturePads();
+            
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateOfProcedure').value = today;
+        });
+    </script>
+</body>
+</html>

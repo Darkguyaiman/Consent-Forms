@@ -921,6 +921,152 @@
             return true;
         }
 
+        function generatePDFBase64() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const margin = 20;
+            let yPos = margin;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const contentWidth = pageWidth - (margin * 2);
+            const imgWidth = 80;
+            const imgHeight = 30;
+
+            doc.setFillColor(197, 62, 92);
+            doc.rect(0, 0, pageWidth, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('K-Laser Blue Derma', pageWidth / 2, 15, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text('Informed Consent for Non-Surgical Blepharoplasty', pageWidth / 2, 25, { align: 'center' });
+
+            yPos = 50;
+
+            doc.setTextColor(197, 62, 92);
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Patient Information', margin, yPos);
+            yPos += 10;
+            doc.setDrawColor(197, 62, 92);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 15;
+
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+
+            doc.text(`Patient Name: ${storedFormData.patientName}`, margin, yPos); yPos += 8;
+            doc.text(`IC/Passport Number: ${storedFormData.icPassport}`, margin, yPos); yPos += 8;
+            doc.text(`Date of Birth: ${storedFormData.dateOfBirth}`, margin, yPos); yPos += 8;
+            doc.text(`Date of Procedure: ${storedFormData.dateOfProcedure}`, margin, yPos); yPos += 20;
+
+            const consentSections = document.querySelectorAll('.consent-section');
+            consentSections.forEach((section) => {
+                if (yPos > 240) {
+                    doc.addPage();
+                    yPos = margin;
+                }
+
+                const title = section.querySelector('h2').textContent;
+                const content = section.querySelectorAll('p, li');
+
+                doc.setTextColor(197, 62, 92);
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text(title, margin, yPos);
+                yPos += 8;
+
+                doc.setFillColor(248, 232, 236);
+                doc.rect(margin, yPos - 2, contentWidth, 1, 'F');
+                yPos += 10;
+
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+
+                content.forEach(element => {
+                    if (element.tagName === 'P') {
+                        const splitText = doc.splitTextToSize(element.textContent, contentWidth);
+                        if (yPos + (splitText.length * 5) > 270) {
+                            doc.addPage();
+                            yPos = margin;
+                        }
+                        splitText.forEach(line => {
+                            doc.text(line, margin + 2, yPos);
+                            yPos += 5;
+                        });
+                        yPos += 3;
+                    } else if (element.tagName === 'LI') {
+                        const text = '• ' + element.textContent.replace(/CO₂/g, "CO2").replace(/Er:YAG/g, "Er:YAG");
+                        const splitText = doc.splitTextToSize(text, contentWidth - 10);
+                        if (yPos + (splitText.length * 5) > 270) {
+                            doc.addPage();
+                            yPos = margin;
+                        }
+                        splitText.forEach((line, i) => {
+                            doc.text(line, margin + (i === 0 ? 5 : 10), yPos);
+                            yPos += 5;
+                        });
+                        yPos += 2;
+                    }
+                });
+
+                yPos += 10;
+            });
+
+            if (yPos > 200) { doc.addPage(); yPos = margin; }
+            doc.setTextColor(197, 62, 92);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Patient Acknowledgement', margin, yPos);
+            yPos += 10;
+            doc.setDrawColor(197, 62, 92);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 15;
+
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.text('I acknowledge that I have read and understood this consent form.', margin, yPos);
+            yPos += 10;
+
+            if (storedFormData.patientSignature) {
+                doc.addImage(storedFormData.patientSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
+                yPos += imgHeight + 5;
+            }
+            doc.text(`Patient Name: ${storedFormData.patientName}`, margin, yPos); yPos += 6;
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, yPos); yPos += 20;
+
+            if (yPos > 200) { doc.addPage(); yPos = margin; }
+            doc.setTextColor(197, 62, 92);
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Clinician Declaration', margin, yPos);
+            yPos += 10;
+            doc.setDrawColor(197, 62, 92);
+            doc.line(margin, yPos, pageWidth - margin, yPos);
+            yPos += 15;
+
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(11);
+            doc.text('I confirm that I have explained the procedure, risks, and alternatives', margin, yPos);
+            yPos += 6;
+            doc.text('to the patient and have answered all related questions.', margin, yPos);
+            yPos += 10;
+
+            if (storedFormData.practitionerSignature) {
+                doc.addImage(storedFormData.practitionerSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
+                yPos += imgHeight + 5;
+            }
+            doc.text(`Practitioner Name: ${storedFormData.practitionerName}`, margin, yPos);
+            yPos += 6;
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, yPos);
+
+            const footerY = doc.internal.pageSize.getHeight() - 10;
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(8);
+            doc.text('Generated on ' + new Date().toLocaleString(), pageWidth / 2, footerY, { align: 'center' });
+
+            return doc.output('datauristring');         }
+
         async function submitForm() {
             if (!validateForm()) return;
 
@@ -938,8 +1084,10 @@
                     dateOfProcedure: document.getElementById('dateOfProcedure').value,
                     practitionerName: document.getElementById('practitionerName').value,
                     patientSignature: document.getElementById('patientSignatureCanvas').toDataURL(),
-                    practitionerSignature: document.getElementById('practitionerSignatureCanvas').toDataURL(),
+                    practitionerSignature: document.getElementById('practitionerSignatureCanvas').toDataURL()
                 };
+
+                storedFormData.pdfFile = generatePDFBase64();
 
                 const result = await new Promise((resolve, reject) => {
                     google.script.run
@@ -950,7 +1098,6 @@
 
                 if (result.success) {
                     showModal('success', 'Form Submitted Successfully!', 'Your consent form has been saved. You can now download a PDF copy.');
-
 
                     document.getElementById('consentForm').reset();
                     clearPatientSignature();

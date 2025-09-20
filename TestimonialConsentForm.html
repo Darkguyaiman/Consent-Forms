@@ -786,26 +786,27 @@
                 patientSignature: patientSignaturePad.toDataURL()
             };
 
-
-            google.script.run
-                .withSuccessHandler(function(response) {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    
-                    if (response.success) {
-                        showSuccessModal(patientName, submitData);
-                        form.reset();
-                        clearPatientSignature();
-                    } else {
-                        showErrorModal('Error', 'There was an error submitting your form. Please try again.');
-                    }
-                })
-                .withFailureHandler(function(error) {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                    showErrorModal('Error', 'There was an error submitting your form: ' + error.message);
-                })
-                .saveTestimonialConsentForm(submitData);
+            generateClientPDF(submitData, false, function(pdfBase64) {
+                submitData.pdfBase64 = pdfBase64; 
+                google.script.run
+                  .withSuccessHandler(function(response) {
+                      submitBtn.innerHTML = originalText;
+                      submitBtn.disabled = false;
+                      if (response.success) {
+                          showSuccessModal(patientName, submitData);
+                          form.reset();
+                          clearPatientSignature();
+                      } else {
+                          showErrorModal('Error', 'There was an error submitting your form. Please try again.');
+                      }
+                  })
+                  .withFailureHandler(function(error) {
+                      submitBtn.innerHTML = originalText;
+                      submitBtn.disabled = false;
+                      showErrorModal('Error', 'There was an error submitting your form: ' + error.message);
+                  })
+                  .saveTestimonialConsentForm(submitData);
+            });
         }
 
         function showSuccessModal(patientName, formData) {
@@ -865,7 +866,7 @@
             }
         }
 
-        function generateClientPDF(formData) {
+        function generateClientPDF(formData, download = true, callback) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
@@ -993,7 +994,13 @@
             doc.setFontSize(8);
             doc.text('Generated on ' + new Date().toLocaleString(), pageWidth / 2, footerY, { align: 'center' });
 
-            doc.save(`Testimonial_Consent_${formData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+            if (download) {
+                doc.save(`Testimonial_Consent_${formData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+            }
+            if (callback) {
+                const pdfBase64 = doc.output("datauristring").split(",")[1];
+                callback(pdfBase64);
+            }
 
             function addSection(doc, title, content, margin, yPos, contentWidth) {
                 if (yPos > 240) { doc.addPage(); yPos = margin; }

@@ -930,7 +930,7 @@
             submitBtn.disabled = true;
 
             try {
-                // Store form data before resetting
+
                 storedFormData = {
                     patientName: document.getElementById('patientName').value,
                     icPassport: document.getElementById('icPassport').value,
@@ -945,13 +945,13 @@
                     google.script.run
                         .withSuccessHandler(resolve)
                         .withFailureHandler(reject)
-                        .saveConsentForm(storedFormData);
+                        .saveTreatmentConsentForm(storedFormData);
                 });
 
                 if (result.success) {
                     showModal('success', 'Form Submitted Successfully!', 'Your consent form has been saved. You can now download a PDF copy.');
 
-                    // Reset form after storing data
+
                     document.getElementById('consentForm').reset();
                     clearPatientSignature();
                     clearPractitionerSignature();
@@ -1022,7 +1022,7 @@
             doc.setFontSize(12);
             doc.setFont(undefined, 'normal');
             
-            // Use stored data instead of form fields
+
             doc.text(`Patient Name: ${storedFormData.patientName}`, margin, yPos); yPos += 8;
             doc.text(`IC/Passport Number: ${storedFormData.icPassport}`, margin, yPos); yPos += 8;
             doc.text(`Date of Birth: ${storedFormData.dateOfBirth}`, margin, yPos); yPos += 8;
@@ -1108,7 +1108,7 @@
             doc.text('I acknowledge that I have read and understood this consent form.', margin, yPos);
             yPos += 10;
             
-            // Use stored signature data
+
             if (storedFormData.patientSignature) {
                 doc.addImage(storedFormData.patientSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
                 yPos += imgHeight + 5;
@@ -1142,7 +1142,7 @@
             doc.text('to the patient and have answered all related questions.', margin, yPos);
             yPos += 10;
             
-            // Use stored signature data
+
             if (storedFormData.practitionerSignature) {
                 doc.addImage(storedFormData.practitionerSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
                 yPos += imgHeight + 5;

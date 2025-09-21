@@ -368,7 +368,7 @@
             margin-bottom: 20px;
             display: block;
         }
-        
+
         @media (max-width: 1200px) {
             .consent-table {
                 font-size: 12px;
@@ -524,6 +524,7 @@
 
         window.onload = function() {
             loadConsentForms();
+            setupQRCodeButton();
         };
 
         function loadConsentForms() {
@@ -546,7 +547,6 @@
             }
             filteredRecords = allRecords;
             displayRecords(filteredRecords);
-            updateStats(filteredRecords.length);
             const searchBox = document.getElementById('searchBox');
             if (searchBox) {
                 searchBox.removeEventListener('input', handleSearch);
@@ -561,7 +561,7 @@
             errorDiv.style.display = 'flex';
         }
 
-                function setupQRCodeButton() {
+        function setupQRCodeButton() {
             const qrButton = document.getElementById('qrButton');
             const qrCanvas = document.createElement('canvas');
             qrCanvas.id = 'qrCodeCanvas';

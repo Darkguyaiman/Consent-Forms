@@ -6,6 +6,7 @@
     <title>Testimonial Consent Form Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
     <style>
         :root {
             --primary-red: #c53e5c;
@@ -17,6 +18,7 @@
             --white: #ffffff;
             --success-green: #48bb78;
             --warning-orange: #ed8936;
+            --primary-blue: #3e5cc5;
             --border-radius: 12px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -419,9 +421,42 @@
                 justify-content: center;
             }
         }
+
+        #qrButton {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        #qrButton:hover {
+            background: var(--warning-orange);
+            transform: scale(1.1);
+            box-shadow: var(--shadow-hover);
+        }
+
+        #qrCodeCanvas {
+            display: none;
+        }
     </style>
 </head>
 <body>
+  <button id="qrButton" title="Download Testimonial Consent Form QR">
+      <i class="fas fa-qrcode"></i>
+  </button>
     <div class="container">
         <div class="header">
             <h1>
@@ -496,11 +531,12 @@
         let allData = [];
         let filteredData = [];
 
-        // Load data when page loads
+
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             setupSearch();
             setupModal();
+            setupQRCodeButton()
         });
 
         function loadData() {
@@ -565,6 +601,47 @@
             });
         }
 
+        function setupQRCodeButton() {
+            const qrButton = document.getElementById('qrButton');
+            const qrCanvas = document.createElement('canvas');
+            qrCanvas.id = 'qrCodeCanvas';
+            document.body.appendChild(qrCanvas);
+            
+            qrButton.addEventListener('click', generateAndDownloadQR);
+        }
+
+        function generateAndDownloadQR() {
+
+            const fixedUrl = "https://appscript.com/testimonial-consent-form";
+            const canvas = document.getElementById('qrCodeCanvas');
+            
+
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            
+
+            QRCode.toCanvas(canvas, fixedUrl, {
+                width: 300,
+                margin: 1,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function(error) {
+                if (error) {
+                    console.error('QR Code generation error:', error);
+                    alert('Error generating QR code');
+                    return;
+                }
+                
+
+                const link = document.createElement('a');
+                link.download = 'testimonial-consent-qr.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
         function formatTimestamp(timestamp) {
             if (!timestamp) return '-';
             try {
@@ -586,7 +663,7 @@
         function formatSignature(signatureLink) {
             if (!signatureLink || signatureLink.trim() === '') return '-';
             
-            // Check if it's a valid image URL
+
             if (isImageUrl(signatureLink)) {
                 return `<img src="${escapeHtml(signatureLink)}" alt="Patient Signature" class="signature-img" onclick="showSignatureModal('${escapeHtml(signatureLink)}')">`;
             } else {

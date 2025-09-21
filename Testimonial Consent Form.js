@@ -23,7 +23,7 @@ function saveTestimonialConsentForm(formData) {
       ]]);
     }
 
-    const folderId = '1exjWvrHNGaOyio7Moxum0-u0olyHKRMk';
+    const folderId = 'YOUR_DRIVE_FOLDER_ID';
     const folder = DriveApp.getFolderById(folderId);
 
     const patientBase64Data = formData.patientSignature.split(',')[1];

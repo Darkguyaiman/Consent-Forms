@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Medical Error</title>
+    <style>
+        :root {
+            --primary-red: #c53e5c;
+            --text-color: #f9f9f3;
+            --laser-color: #00ff88;
+            --laser-secondary: #ff0066;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-red);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            color: var(--text-color);
+        }
+
+        /* Animated Background Grid */
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(249, 249, 243, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(249, 249, 243, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Laser Beams */
+        .laser-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .laser-beam {
+            position: absolute;
+            width: 2px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, var(--laser-color), transparent);
+            animation: laserScan 3s ease-in-out infinite;
+            opacity: 0.7;
+        }
+
+        .laser-beam:nth-child(1) { left: 20%; animation-delay: 0s; }
+        .laser-beam:nth-child(2) { left: 60%; animation-delay: 1s; background: linear-gradient(to bottom, transparent, var(--laser-secondary), transparent); }
+        .laser-beam:nth-child(3) { left: 80%; animation-delay: 2s; }
+
+        @keyframes laserScan {
+            0%, 100% { opacity: 0; transform: scaleY(0); }
+            50% { opacity: 0.7; transform: scaleY(1); }
+        }
+
+        /* Floating Medical Icons */
+        .floating-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+        }
+
+        .medical-icon {
+            position: absolute;
+            font-size: 24px;
+            color: var(--text-color);
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .medical-icon:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+        .medical-icon:nth-child(2) { top: 20%; right: 20%; animation-delay: 1s; }
+        .medical-icon:nth-child(3) { top: 60%; left: 10%; animation-delay: 2s; }
+        .medical-icon:nth-child(4) { bottom: 30%; right: 15%; animation-delay: 3s; }
+        .medical-icon:nth-child(5) { top: 40%; left: 70%; animation-delay: 4s; }
+        .medical-icon:nth-child(6) { bottom: 20%; left: 30%; animation-delay: 5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(-40px) rotate(180deg); }
+            75% { transform: translateY(-20px) rotate(270deg); }
+        }
+
+        /* Particle System */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--text-color);
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Main Content */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(249, 249, 243, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .error-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .error-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 600px;
+            animation: slideInRight 1s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .btn {
+            padding: 15px 30px;
+            background: rgba(249, 249, 243, 0.1);
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            background: var(--text-color);
+            color: var(--primary-red);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(249, 249, 243, 0.3);
+        }
+
+        .btn-primary {
+            background: var(--laser-color);
+            border-color: var(--laser-color);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--laser-color);
+            border-color: var(--laser-color);
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 2s infinite;
+            color: var(--laser-color);
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 2s infinite;
+            color: var(--laser-secondary);
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 14%, 15%, 49%, 50%, 99%, 100% {
+                transform: translate(0);
+            }
+            15%, 49% {
+                transform: translate(-2px, 2px);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0%, 20%, 21%, 62%, 63%, 99%, 100% {
+                transform: translate(0);
+            }
+            21%, 62% {
+                transform: translate(2px, -2px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 5rem;
+            }
+            .error-title {
+                font-size: 2rem;
+            }
+            .error-message {
+                font-size: 1rem;
+            }
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-background"></div>
+    
+
+    <div class="laser-container">
+        <div class="laser-beam"></div>
+        <div class="laser-beam"></div>
+        <div class="laser-beam"></div>
+    </div>
+    
+    <div class="floating-icons">
+        <div class="medical-icon">⚕️</div>
+        <div class="medical-icon">🩺</div>
+        <div class="medical-icon">💊</div>
+        <div class="medical-icon">🧬</div>
+        <div class="medical-icon">🔬</div>
+        <div class="medical-icon">⚡</div>
+    </div>
+
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <div class="error-code glitch" data-text="404">404</div>
+        <h1 class="error-title">Consent Form Error</h1>
+        <p class="error-message">
+            The requested consent form  or page could not be found in the system. 
+            Sorry <3
+        </p>
+        <div class="action-buttons">
+            <a href="/" class="btn btn-primary">Return to Base</a>
+        </div>
+    </div>
+
+    <script>
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+
+        function addGlitchEffect() {
+            const glitchElement = document.querySelector('.glitch');
+            setInterval(() => {
+                if (Math.random() < 0.1) {
+                    glitchElement.style.animation = 'none';
+                    setTimeout(() => {
+                        glitchElement.style.animation = '';
+                    }, 100);
+                }
+            }, 2000);
+        }
+
+
+        function addSoundEffects() {
+            const laserBeams = document.querySelectorAll('.laser-beam');
+            laserBeams.forEach((beam, index) => {
+                beam.addEventListener('animationiteration', () => {
+
+                    beam.style.boxShadow = '0 0 20px var(--laser-color)';
+                    setTimeout(() => {
+                        beam.style.boxShadow = 'none';
+                    }, 200);
+                });
+            });
+        }
+
+
+        function addInteractiveEffects() {
+            const container = document.querySelector('.container');
+            
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                
+                container.style.transform = `translate(${(x - 50) * 0.1}px, ${(y - 50) * 0.1}px)`;
+            });
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            addGlitchEffect();
+            addSoundEffects();
+            addInteractiveEffects();
+        });
+
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                window.history.back();
+            } else if (e.key === 'Enter') {
+                window.location.href = '/';
+            }
+        });
+    </script>
+</body>
+</html>

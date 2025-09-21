@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Laser Blue Derma Consent Forms</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-red: #c53e5c;
+            --secondary-red: #a8334a;
+            --light-red: #f8e8ec;
+            --dark-gray: #2d3748;
+            --medium-gray: #718096;
+            --light-gray: #e2e8f0;
+            --white: #ffffff;
+            --success-green: #48bb78;
+            --warning-orange: #ed8936;
+            --primary-blue: #3e5cc5;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f9f9f3 0%, #f1f5f9 100%);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+            color: var(--white);
+            padding: 40px 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-container {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .search-container:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            outline: none;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(197, 62, 92, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .search-box:focus + .search-icon {
+            color: var(--primary-red);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 18px;
+            color: var(--medium-gray);
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--primary-red);
+            margin-bottom: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: linear-gradient(135deg, #fee, #fdd);
+            color: #c33;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            border-left: 4px solid #c33;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .error i {
+            font-size: 24px;
+        }
+
+        .stats {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .table-container:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .consent-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .consent-table th {
+            background: var(--primary-red);
+            color: var(--white);
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .consent-table th i {
+            margin-right: 8px;
+            opacity: 0.8;
+        }
+
+        .consent-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid var(--light-gray);
+            vertical-align: middle;
+            transition: var(--transition);
+        }
+
+        .consent-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .consent-table tbody tr:hover {
+            background: linear-gradient(135deg, var(--light-red), #fef7f8);
+            transform: translateY(-1px);
+        }
+
+        .consent-table tbody tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+
+        .consent-table tbody tr:nth-child(even):hover {
+            background: linear-gradient(135deg, var(--light-red), #fef7f8);
+        }
+
+        .signature-cell {
+            text-align: center;
+            width: 120px;
+        }
+
+        .signature-image {
+            max-width: 100px;
+            max-height: 60px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            background: #f8f9fa;
+            padding: 4px;
+            transition: var(--transition);
+        }
+
+        .signature-image:hover {
+            border-color: var(--primary-red);
+            transform: scale(1.05);
+        }
+
+        .signature-placeholder {
+            width: 100px;
+            height: 40px;
+            background: var(--light-gray);
+            border: 2px dashed var(--medium-gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--medium-gray);
+            font-size: 11px;
+            font-style: italic;
+            margin: 0 auto;
+            gap: 5px;
+        }
+
+        .document-link {
+            text-align: center;
+        }
+
+        .document-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+            color: var(--white);
+            padding: 10px 18px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 12px;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .document-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(197, 62, 92, 0.4);
+        }
+
+        .row-number {
+            background: linear-gradient(135deg, var(--primary-red), var(--secondary-red));
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--medium-gray);
+            font-size: 18px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .no-results i {
+            font-size: 64px;
+            color: var(--light-gray);
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        @media (max-width: 1200px) {
+            .consent-table {
+                font-size: 12px;
+            }
+            
+            .consent-table th,
+            .consent-table td {
+                padding: 12px 8px;
+            }
+            
+            .signature-image {
+                max-width: 80px;
+                max-height: 50px;
+            }
+            
+            .signature-cell {
+                width: 100px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .header p {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .consent-table {
+                min-width: 1000px;
+            }
+
+            .search-container {
+                padding: 20px;
+            }
+
+            .search-box {
+                padding: 15px 15px 15px 45px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #qrButton {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        #qrButton:hover {
+            background: var(--warning-orange);
+            transform: scale(1.1);
+            box-shadow: var(--shadow-hover);
+        }
+
+        #qrCodeCanvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+  <button id="qrButton" title="Download K-Laser Blue Derma Consent Form QR">
+      <i class="fas fa-qrcode"></i>
+  </button>
+
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                K-Laser Blue Derma Consent Form Admin Pannel
+            </h1>
+        </div>
+
+        <div class="search-container">
+            <div class="search-wrapper">
+                <input type="text" id="searchBox" class="search-box" placeholder="Search by patient name, IC/Passport, practitioner, or any field...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+
+        <div id="loadingMessage" class="loading">
+            <i class="fas fa-spinner"></i>
+            <div>Loading consent forms...</div>
+        </div>
+
+        <div id="errorMessage" class="error" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span></span>
+        </div>
+
+        <div id="tableContainer" class="table-container" style="display: none;">
+            <table class="consent-table">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-clock"></i>Timestamp</th>
+                        <th><i class="fas fa-user"></i>Patient Name</th>
+                        <th><i class="fas fa-id-card"></i>IC/Passport</th>
+                        <th><i class="fas fa-birthday-cake"></i>Date of Birth</th>
+                        <th><i class="fas fa-calendar-alt"></i>Date of Procedure</th>
+                        <th><i class="fas fa-user-md"></i>Practitioner</th>
+                        <th><i class="fas fa-signature"></i>Patient Signature</th>
+                        <th><i class="fas fa-signature"></i>Practitioner Signature</th>
+                        <th><i class="fas fa-file-pdf"></i>Document</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div id="noResults" class="no-results" style="display: none;">
+            <i class="fas fa-search-minus"></i>
+            <div>No consent forms match your search criteria.</div>
+        </div>
+    </div>
+
+    <script>
+        let allRecords = [];
+        let filteredRecords = [];
+
+        window.onload = function() {
+            loadConsentForms();
+        };
+
+        function loadConsentForms() {
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            google.script.run
+                .withSuccessHandler(onDataLoaded)
+                .withFailureHandler(onDataError)
+                .getConsentFormData();
+        }
+
+        function onDataLoaded(data) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            try {
+                allRecords = JSON.parse(data) || [];
+            } catch (e) {
+                console.error('Failed to parse data:', e);
+                allRecords = [];
+            }
+            filteredRecords = allRecords;
+            displayRecords(filteredRecords);
+            updateStats(filteredRecords.length);
+            const searchBox = document.getElementById('searchBox');
+            if (searchBox) {
+                searchBox.removeEventListener('input', handleSearch);
+                searchBox.addEventListener('input', handleSearch);
+            }
+        }
+
+        function onDataError(error) {
+            document.getElementById('loadingMessage').style.display = 'none';
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.querySelector('span').textContent = 'Error loading data: ' + error.message;
+            errorDiv.style.display = 'flex';
+        }
+
+                function setupQRCodeButton() {
+            const qrButton = document.getElementById('qrButton');
+            const qrCanvas = document.createElement('canvas');
+            qrCanvas.id = 'qrCodeCanvas';
+            document.body.appendChild(qrCanvas);
+            
+            qrButton.addEventListener('click', generateAndDownloadQR);
+        }
+
+        function generateAndDownloadQR() {
+
+            const fixedUrl = "https://appscript.com/Klaser-Blue-Derma-consent-form";
+            const canvas = document.getElementById('qrCodeCanvas');
+            
+
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            
+
+            QRCode.toCanvas(canvas, fixedUrl, {
+                width: 300,
+                margin: 1,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function(error) {
+                if (error) {
+                    console.error('QR Code generation error:', error);
+                    alert('Error generating QR code');
+                    return;
+                }
+                
+
+                const link = document.createElement('a');
+                link.download = 'testimonial-consent-qr.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredRecords = allRecords;
+            } else {
+                filteredRecords = allRecords.filter(record => {
+                    return (
+                        record.patientName.toLowerCase().includes(searchTerm) ||
+                        record.icPassport.toLowerCase().includes(searchTerm) ||
+                        record.practitionerName.toLowerCase().includes(searchTerm) ||
+                        record.timestamp.toLowerCase().includes(searchTerm) ||
+                        record.dateOfBirth.toLowerCase().includes(searchTerm) ||
+                        record.dateOfProcedure.toLowerCase().includes(searchTerm)
+                    );
+                });
+            }
+            
+            displayRecords(filteredRecords);
+        }
+
+        function displayRecords(records) {
+            const tableContainer = document.getElementById('tableContainer');
+            const tableBody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+            
+            if (records.length === 0) {
+                tableContainer.style.display = 'none';
+                noResults.style.display = 'block';
+                noResults.classList.add('fade-in');
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            tableContainer.style.display = 'block';
+            tableContainer.classList.add('fade-in');
+            
+            tableBody.innerHTML = records.map((record, index) => `
+                <tr>
+                    <td>${escapeHtml(record.timestamp)}</td>
+                    <td>
+                        <span class="patient-name">
+                            <i class="fas fa-user-circle"></i>
+                            ${escapeHtml(record.patientName)}
+                        </span>
+                    </td>
+                    <td>${escapeHtml(record.icPassport)}</td>
+                    <td>${escapeHtml(record.dateOfBirth)}</td>
+                    <td>${escapeHtml(record.dateOfProcedure)}</td>
+                    <td>${escapeHtml(record.practitionerName)}</td>
+                    <td class="signature-cell">
+                        ${record.patientSignatureLink ? 
+                            `<img src="${escapeHtml(record.patientSignatureLink)}" alt="Patient Signature" class="signature-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <div class="signature-placeholder" style="display: none;">
+                                <i class="fas fa-times"></i>
+                                Not available
+                             </div>` :
+                            `<div class="signature-placeholder">
+                                <i class="fas fa-pen"></i>
+                                No signature
+                             </div>`
+                        }
+                    </td>
+                    <td class="signature-cell">
+                        ${record.practitionerSignatureLink ? 
+                            `<img src="${escapeHtml(record.practitionerSignatureLink)}" alt="Practitioner Signature" class="signature-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <div class="signature-placeholder" style="display: none;">
+                                <i class="fas fa-times"></i>
+                                Not available
+                             </div>` :
+                            `<div class="signature-placeholder">
+                                <i class="fas fa-pen"></i>
+                                No signature
+                             </div>`
+                        }
+                    </td>
+                    <td class="document-link">
+                        ${record.signedDocumentLink ? 
+                            `<a href="${escapeHtml(record.signedDocumentLink)}" target="_blank" class="document-btn">
+                                <i class="fas fa-external-link-alt"></i>
+                                View Doc
+                             </a>` :
+                            `<span style="color: var(--medium-gray); font-size: 12px;">
+                                <i class="fas fa-file-times"></i>
+                                No document
+                             </span>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

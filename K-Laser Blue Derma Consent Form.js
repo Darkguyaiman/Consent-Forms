@@ -24,7 +24,7 @@ function saveTreatmentConsentForm(formData) {
       ]]);
     }
 
-    const driveId = '1exjWvrHNGaOyio7Moxum0-u0olyHKRMk';
+    const driveId = 'YOUR_DRIVE_FOLDER_ID';
     const folder = DriveApp.getFolderById(driveId);
 
     const patientBase64Data = formData.patientSignature.split(',')[1];

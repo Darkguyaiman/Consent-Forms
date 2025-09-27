@@ -17,7 +17,7 @@ function getTestimonialData() {
     if (lastRow < 2) {
       return JSON.stringify([]);
     }
-    const range = sheet.getRange(2, 1, lastRow - 1, Math.max(lastCol, 7));
+    const range = sheet.getRange(2, 1, lastRow - 1, Math.max(lastCol, 8));
     const values = range.getValues();
     const data = values.map((row, index) => {
       return {
@@ -25,6 +25,7 @@ function getTestimonialData() {
         timestamp: row[0] || '',
         patientName: row[1] || '',
         contactNo: row[2] || '',
+        patientEmail: row[7] || '',
         photoVideoPermission: row[3] || '',
         acknowledgementConsent: row[4] || '',
         patientSignatureLink: row[5] || '',
@@ -40,5 +41,4 @@ function getTestimonialData() {
     throw new Error('Failed to fetch data: ' + error.message);
   }
 }
-
 

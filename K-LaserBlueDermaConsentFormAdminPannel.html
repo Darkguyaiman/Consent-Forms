@@ -217,7 +217,9 @@
             background: var(--white);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            overflow: hidden;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 500px;
             transition: var(--transition);
         }
 
@@ -915,6 +917,8 @@
                         <th><i class="fas fa-clock"></i>Timestamp</th>
                         <th><i class="fas fa-user"></i>Patient Name</th>
                         <th><i class="fas fa-id-card"></i>IC/Passport</th>
+                        <th><i class="fas fa-phone"></i>Contact Number</th>
+                        <th><i class="fas fa-envelope"></i>Patient Email</th>
                         <th><i class="fas fa-birthday-cake"></i>Date of Birth</th>
                         <th><i class="fas fa-calendar-alt"></i>Date of Procedure</th>
                         <th><i class="fas fa-user-md"></i>Practitioner</th>
@@ -1057,7 +1061,7 @@
 
         function generateAndDownloadQR() {
 
-            const fixedUrl = "https://appscript.com/Klaser-Blue-Derma-consent-form";
+            const fixedUrl = "https://script.google.com/macros/s/AKfycbz32out2WHoh1CdWGVdfK9b5vkjONWTS9h-jbsm_Bqg6earb4iZWutqWUR4hNQxXKW1/exec?page=K-LaserBlueDermaConsentForm";
             const canvas = document.getElementById('qrCodeCanvas');
             
 
@@ -1089,22 +1093,29 @@
 
         function handleSearch() {
             const searchTerm = document.getElementById('searchBox').value.toLowerCase().trim();
-            
+
+            const safeIncludes = (field) => {
+                if (field === null || field === undefined) return false;
+                return String(field).toLowerCase().includes(searchTerm);
+            };
+
             if (searchTerm === '') {
                 filteredRecords = allRecords;
             } else {
                 filteredRecords = allRecords.filter(record => {
                     return (
-                        record.patientName.toLowerCase().includes(searchTerm) ||
-                        record.icPassport.toLowerCase().includes(searchTerm) ||
-                        record.practitionerName.toLowerCase().includes(searchTerm) ||
-                        record.timestamp.toLowerCase().includes(searchTerm) ||
-                        record.dateOfBirth.toLowerCase().includes(searchTerm) ||
-                        record.dateOfProcedure.toLowerCase().includes(searchTerm)
+                        safeIncludes(record.patientName) ||
+                        safeIncludes(record.icPassport) ||
+                        safeIncludes(record.practitionerName) ||
+                        safeIncludes(record.timestamp) ||
+                        safeIncludes(record.dateOfBirth) ||
+                        safeIncludes(record.dateOfProcedure) ||
+                        safeIncludes(record.contactNumber) ||
+                        safeIncludes(record.patientEmail)
                     );
                 });
             }
-            
+
             displayRecords(filteredRecords);
         }
 
@@ -1133,7 +1144,23 @@
                             ${escapeHtml(record.patientName)}
                         </span>
                     </td>
-                    <td>${escapeHtml(record.icPassport)}</td>
+                    <td>${escapeHtml(record.icPassport)}</td>                    
+                    <td>
+                        ${record.contactNumber ? 
+                            `<a href="tel:${escapeHtml(record.contactNumber)}" style="color: var(--primary-blue); text-decoration: none;">
+                                ${escapeHtml(record.contactNumber)}
+                            </a>` :
+                            '<span style="color: var(--medium-gray); font-size: 12px;">No contact</span>'
+                        }
+                    </td>
+                    <td>
+                        ${record.patientEmail ? 
+                            `<a href="mailto:${escapeHtml(record.patientEmail)}" style="color: var(--primary-blue); text-decoration: none;">
+                                ${escapeHtml(record.patientEmail)}
+                            </a>` :
+                            '<span style="color: var(--medium-gray); font-size: 12px;">No email</span>'
+                        }
+                    </td>
                     <td>${escapeHtml(record.dateOfBirth)}</td>
                     <td>${escapeHtml(record.dateOfProcedure)}</td>
                     <td>${escapeHtml(record.practitionerName)}</td>

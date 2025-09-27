@@ -885,7 +885,7 @@
             <div class="search-container">
                 <div class="search-wrapper">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchBox" class="search-box" placeholder="Search by patient name, contact number, or any field...">
+                    <input type="text" id="searchBox" class="search-box" placeholder="Search by patient name, contact number, email, or any field...">
                 </div>
             </div>
 
@@ -917,6 +917,7 @@
                             <th><i class="fas fa-clock"></i> Timestamp</th>
                             <th><i class="fas fa-user"></i> Patient Name</th>
                             <th><i class="fas fa-phone"></i> Contact No.</th>
+                            <th><i class="fas fa-envelope"></i> Patient Email</th>
                             <th><i class="fas fa-camera"></i> Photo/Video Permission</th>
                             <th><i class="fas fa-check-circle"></i> Acknowledgement Consent</th>
                             <th><i class="fas fa-signature"></i> Patient Signature</th>
@@ -1075,6 +1076,7 @@
                     <td>${formatTimestamp(row.timestamp)}</td>
                     <td><strong>${escapeHtml(row.patientName)}</strong></td>
                     <td>${escapeHtml(row.contactNo)}</td>
+                    <td>${escapeHtml(row.patientEmail)}</td>
                     <td>${formatPermission(row.photoVideoPermission)}</td>
                     <td>${formatPermission(row.acknowledgementConsent)}</td>
                     <td>${formatSignature(row.patientSignatureLink)}</td>
@@ -1096,7 +1098,7 @@
 
         function generateAndDownloadQR() {
 
-            const fixedUrl = "https://appscript.com/testimonial-consent-form";
+            const fixedUrl = "https://script.google.com/macros/s/AKfycbz32out2WHoh1CdWGVdfK9b5vkjONWTS9h-jbsm_Bqg6earb4iZWutqWUR4hNQxXKW1/exec?page=TestimonialConsentForm";
             const canvas = document.getElementById('qrCodeCanvas');
             
 

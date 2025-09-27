@@ -885,176 +885,210 @@
             }
         }
 
-        function generateClientPDF(formData, download = true, callback) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+function generateClientPDF(formData, download = true, callback) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-            const margin = 20;
-            let yPos = margin;
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const contentWidth = pageWidth - (margin * 2);
-            const imgWidth = 80;
-            const imgHeight = 30;
+    const margin = 20;
+    let yPos = margin;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const contentWidth = pageWidth - (margin * 2);
+    const imgWidth = 80;
+    const imgHeight = 30;
+    const boxSize = 5;
 
-            doc.setFillColor(197, 62, 92);
-            doc.rect(0, 0, pageWidth, 40, 'F');
+    doc.setFillColor(197, 62, 92);
+    doc.rect(0, 0, pageWidth, 40, 'F');
 
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(20);
-            doc.setFont(undefined, 'bold');
-            doc.text('Consent Form for Testimonial and Educational Use', pageWidth / 2, 15, { align: 'center' });
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont(undefined, 'bold');
+    doc.text('Consent Form for Testimonial and Educational Use', pageWidth / 2, 15, { align: 'center' });
 
-            yPos = 50;
+    yPos = 50;
 
-            doc.setTextColor(197, 62, 92);
-            doc.setFontSize(16);
-            doc.setFont(undefined, 'bold');
-            doc.text('Patient Information', margin, yPos);
-            yPos += 10;
+    doc.setTextColor(197, 62, 92);
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('Patient Information', margin, yPos);
+    yPos += 10;
 
-            doc.setDrawColor(197, 62, 92);
-            doc.line(margin, yPos, pageWidth - margin, yPos);
-            yPos += 15;
+    doc.setDrawColor(197, 62, 92);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+    yPos += 15;
 
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(12);
-            doc.setFont(undefined, 'normal');
-            doc.text(`Patient Name: ${formData.patientName}`, margin, yPos); yPos += 8;
-            doc.text(`Contact No: ${formData.contactNo}`, margin, yPos); yPos += 8;
-            doc.text(`Patient Email: ${formData.patientEmail}`, margin, yPos); yPos += 20;
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Patient Name: ${formData.patientName}`, margin, yPos); yPos += 8;
+    doc.text(`Contact No: ${formData.contactNo}`, margin, yPos); yPos += 8;
+    doc.text(`Patient Email: ${formData.patientEmail}`, margin, yPos); yPos += 20;
 
-            yPos = addSection(doc, 'Purpose',
-                'This consent form is to confirm that I, the undersigned, voluntarily agree to provide my testimonial regarding treatment with K-Laser. I understand that my testimonial may be used by Photomedic Solutions Sdn Bhd for educational, promotional, and marketing purposes.',
-                margin, yPos, contentWidth
-            );
+    yPos = addSection(doc, 'Purpose',
+        'This consent form is to confirm that I, the undersigned, voluntarily agree to provide my testimonial regarding treatment with K-Laser. I understand that my testimonial may be used by Photomedic Solutions Sdn Bhd for educational, promotional, and marketing purposes.',
+        margin, yPos, contentWidth
+    );
 
-            if (yPos > 240) { doc.addPage(); yPos = margin; }
+    if (yPos > 240) { doc.addPage(); yPos = margin; }
 
-            doc.setTextColor(197, 62, 92);
-            doc.setFontSize(14);
-            doc.setFont(undefined, 'bold');
-            doc.text('Consent for Media (Photo/Video)', margin, yPos);
-            yPos += 8;
+    doc.setTextColor(197, 62, 92);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('Consent for Media (Photo/Video)', margin, yPos);
+    yPos += 8;
 
-            doc.setFillColor(248, 232, 236);
-            doc.rect(margin, yPos - 2, contentWidth, 1, 'F');
-            yPos += 10;
+    doc.setFillColor(248, 232, 236);
+    doc.rect(margin, yPos - 2, contentWidth, 1, 'F');
+    yPos += 10;
 
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(11);
-            doc.setFont(undefined, 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'normal');
 
-            const boxSize = 5;
-            doc.rect(margin, yPos - boxSize + 2, boxSize, boxSize);
-            doc.text("Granted", margin + 8, yPos);
-            if (formData.photoVideoPermission) {
-                drawCheckmark(doc, margin, yPos - boxSize + 2, boxSize);
-            }
-            yPos += 15;
+    doc.rect(margin, yPos - boxSize + 2, boxSize, boxSize);
+    doc.text("Granted", margin + 8, yPos);
+    if (formData.photoVideoPermission) {
+        drawCheckmark(doc, margin, yPos - boxSize + 2, boxSize);
+    }
+    yPos += 15;
 
-            if (formData.photoVideoPermission) {
-                const mediaDetails = [
-                    "I give permission for photos and/or videos of my face to be taken during or after my treatment.",
-                    "I understand that these images and testimonial(s) may be:",
-                    "• Posted on official social media platforms (Facebook, Instagram, TikTok, etc.)",
-                    "• Included in marketing materials, brochures, or presentations",
-                    "• Shown on the company's website or online channels"
-                ];
-                mediaDetails.forEach(text => {
-                    const lines = doc.splitTextToSize(text, contentWidth);
-                    lines.forEach(line => {
-                        if (yPos > 270) { doc.addPage(); yPos = margin; }
-                        doc.text(line, margin + 2, yPos);
-                        yPos += 5;
-                    });
-                    yPos += 3;
-                });
-            }
+    if (formData.photoVideoPermission) {
+        const mediaDetails = [
+            "I give permission for photos and/or videos of my face to be taken during or after my treatment.",
+            "I understand that these images and testimonial(s) may be:",
+            "• Posted on official social media platforms (Facebook, Instagram, TikTok, etc.)",
+            "• Included in marketing materials, brochures, or presentations",
+            "• Shown on the company's website or online channels"
+        ];
+        mediaDetails.forEach(text => {
+            const lines = doc.splitTextToSize(text, contentWidth);
+            lines.forEach(line => {
+                if (yPos > 270) { doc.addPage(); yPos = margin; }
+                doc.text(line, margin + 2, yPos);
+                yPos += 5;
+            });
+            yPos += 3;
+        });
+    }
 
-            const ackText = `• I confirm that the testimonial reflects my own experience as a patient.
-        • I understand that my participation is voluntary.
-        • I acknowledge that once my testimonial/photo/video is published online, the clinic cannot fully control third-party sharing.
-        • I release Photomedic Solutions Sdn Bhd and its staff from any liability related to the use of my testimonial, photos, or videos.`;
-            yPos = addSection(doc, 'Acknowledgement', ackText, margin, yPos, contentWidth);
+    const ackPoints = [
+        "I confirm that the testimonial reflects my own experience as a patient.",
+        "I understand that my participation is voluntary.",
+        "I acknowledge that once my testimonial/photo/video is published online, the clinic cannot fully control third-party sharing.",
+        "I release Photomedic Solutions Sdn Bhd and its staff from any liability related to the use of my testimonial, photos, or videos."
+    ];
 
-            if (yPos > 200) { doc.addPage(); yPos = margin; }
-            doc.setTextColor(197, 62, 92);
-            doc.setFontSize(14);
-            doc.setFont(undefined, 'bold');
-            doc.text('Signature', margin, yPos);
-            yPos += 10;
+    if (yPos > 240) { doc.addPage(); yPos = margin; }
 
-            doc.setDrawColor(197, 62, 92);
-            doc.line(margin, yPos, pageWidth - margin, yPos);
-            yPos += 15;
+    doc.setTextColor(197, 62, 92);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('Acknowledgement', margin, yPos);
+    yPos += 8;
 
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(11);
-            doc.text(`Patient Signature: [Recorded on ${new Date().toLocaleDateString()}]`, margin, yPos);
-            yPos += 10;
+    doc.setFillColor(248, 232, 236);
+    doc.rect(margin, yPos - 2, contentWidth, 1, 'F');
+    yPos += 10;
 
-            if (formData.patientSignature) {
-                try {
-                    doc.addImage(formData.patientSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
-                    yPos += imgHeight + 5;
-                } catch (e) {
-                    doc.text("[Signature image could not be added]", margin, yPos);
-                    yPos += 20;
-                }
-            } else {
-                doc.text("[No patient signature provided]", margin, yPos);
-                yPos += 20;
-            }
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'normal');
 
-            doc.text(`Patient Name: ${formData.patientName}`, margin, yPos); yPos += 6;
-            doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, yPos);
+    doc.rect(margin, yPos - boxSize + 2, boxSize, boxSize);
+    doc.text("Granted", margin + 8, yPos);
+    if (formData.photoVideoPermission) {
+        drawCheckmark(doc, margin, yPos - boxSize + 2, boxSize);
+    }
+    yPos += 15;
 
-            const footerY = doc.internal.pageSize.getHeight() - 10;
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(8);
-            doc.text('Generated on ' + new Date().toLocaleString(), pageWidth / 2, footerY, { align: 'center' });
-
-            if (download) {
-                doc.save(`Testimonial_Consent_${formData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
-            }
-            if (callback) {
-                const pdfBase64 = doc.output("datauristring").split(",")[1];
-                callback(pdfBase64);
-            }
-
-            function addSection(doc, title, content, margin, yPos, contentWidth) {
-                if (yPos > 240) { doc.addPage(); yPos = margin; }
-                doc.setTextColor(197, 62, 92);
-                doc.setFontSize(14);
-                doc.setFont(undefined, 'bold');
-                doc.text(title, margin, yPos);
-                yPos += 8;
-                doc.setFillColor(248, 232, 236);
-                doc.rect(margin, yPos - 2, contentWidth, 1, 'F');
-                yPos += 10;
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(11);
-                doc.setFont(undefined, 'normal');
-                const lines = doc.splitTextToSize(content, contentWidth);
-                lines.forEach(line => {
-                    if (yPos > 270) {
-                        doc.addPage();
-                        yPos = margin;
-                    }
-                    doc.text(line, margin + 2, yPos);
-                    yPos += 5;
-                });
-                return yPos + 10;
-            }
-
-            function drawCheckmark(doc, x, y, boxSize) {
-                const offset = 1.5;
-                doc.setDrawColor(0, 0, 0);
-                doc.setLineWidth(0.6);
-                doc.line(x + offset, y + 1, x + boxSize / 2, y + boxSize - offset);
-                doc.line(x + boxSize / 2, y + boxSize - offset, x + boxSize - offset, y - 1);
-            }
+    ackPoints.forEach(point => {
+        const bullet = "•";
+        const lines = doc.splitTextToSize(point, contentWidth - 10);
+        if (yPos > 270) { doc.addPage(); yPos = margin; }
+        doc.text(bullet, margin + 2, yPos);
+        doc.text(lines[0], margin + 8, yPos);
+        yPos += 5;
+        for (let i = 1; i < lines.length; i++) {
+            if (yPos > 270) { doc.addPage(); yPos = margin; }
+            doc.text(lines[i], margin + 8, yPos);
+            yPos += 5;
         }
+        yPos += 3;
+    });
+
+    if (yPos > 200) { doc.addPage(); yPos = margin; }
+    doc.setTextColor(197, 62, 92);
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('Signature', margin, yPos);
+    yPos += 10;
+
+    doc.setDrawColor(197, 62, 92);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+    yPos += 15;
+
+
+    if (formData.patientSignature) {
+        try {
+            doc.addImage(formData.patientSignature, 'PNG', margin, yPos, imgWidth, imgHeight);
+            yPos += imgHeight + 5;
+        } catch (e) {
+            doc.text("[Signature image could not be added]", margin, yPos);
+            yPos += 20;
+        }
+    } else {
+        doc.text("[No patient signature provided]", margin, yPos);
+        yPos += 20;
+    }
+
+    doc.text(`Patient Name: ${formData.patientName}`, margin, yPos); yPos += 6;
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, margin, yPos);
+
+    const footerY = doc.internal.pageSize.getHeight() - 10;
+    doc.setTextColor(100, 100, 100);
+    doc.setFontSize(8);
+    doc.text('Generated on ' + new Date().toLocaleString(), pageWidth / 2, footerY, { align: 'center' });
+
+    if (download) {
+        doc.save(`Testimonial_Consent_${formData.patientName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+    }
+    if (callback) {
+        const pdfBase64 = doc.output("datauristring").split(",")[1];
+        callback(pdfBase64);
+    }
+
+    function addSection(doc, title, content, margin, yPos, contentWidth) {
+        if (yPos > 240) { doc.addPage(); yPos = margin; }
+        doc.setTextColor(197, 62, 92);
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text(title, margin, yPos);
+        yPos += 8;
+        doc.setFillColor(248, 232, 236);
+        doc.rect(margin, yPos - 2, contentWidth, 1, 'F');
+        yPos += 10;
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(11);
+        doc.setFont(undefined, 'normal');
+        const lines = doc.splitTextToSize(content, contentWidth);
+        lines.forEach(line => {
+            if (yPos > 270) {
+                doc.addPage();
+                yPos = margin;
+            }
+            doc.text(line, margin + 2, yPos);
+            yPos += 5;
+        });
+        return yPos + 10;
+    }
+
+    function drawCheckmark(doc, x, y, boxSize) {
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.6);
+        doc.line(x + 1, y + boxSize / 2, x + boxSize / 2, y + boxSize - 1);
+        doc.line(x + boxSize / 2, y + boxSize - 1, x + boxSize - 1, y + 1);
+    }
+}
 
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('active');

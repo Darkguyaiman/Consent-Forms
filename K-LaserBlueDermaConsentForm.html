@@ -620,6 +620,20 @@
                               A copy of the consent form will be sent to this email
                           </small>
                       </div>
+
+                      <div class="form-group full-width">
+                        <label for="patientContact">
+                            <i class="fas fa-phone icon"></i>
+                            Contact Number
+                        </label>
+                        <input type="tel" id="patientContact" name="patientContact" required 
+                              placeholder="Enter your contact number (e.g., +60-12-345-6789)"
+                              pattern="[\d+\-\s]+"
+                              title="Only numbers, plus signs, and hyphens are allowed">
+                        <small style="color: var(--medium-gray); font-size: 12px; margin-top: 5px; display: block;">
+                            Only numbers, plus signs (+), and hyphens (-) are allowed
+                        </small>
+                    </div>
                     </div>
                     
 
@@ -748,10 +762,15 @@
             return emailRegex.test(email);
         }
 
+        function validateContactNumber(contact) {
+            const contactRegex = /^[\d+\-\s]+$/;
+            return contactRegex.test(contact);
+        }
+
         function validateForm() {
             const requiredFields = [
                 'patientName', 'icPassport', 'dateOfBirth', 'dateOfProcedure', 
-                'practitionerName', 'patientEmail'
+                'practitionerName', 'patientEmail', 'patientContact'
             ];
             
             for (let field of requiredFields) {
@@ -762,12 +781,18 @@
                     return false;
                 }
             }
-            
 
             const email = document.getElementById('patientEmail').value;
             if (!validateEmail(email)) {
                 alert('Please enter a valid email address');
                 document.getElementById('patientEmail').focus();
+                return false;
+            }
+
+            const contact = document.getElementById('patientContact').value;
+            if (!validateContactNumber(contact)) {
+                alert('Contact number can only contain numbers, plus signs (+), and hyphens (-)');
+                document.getElementById('patientContact').focus();
                 return false;
             }
             
@@ -1011,6 +1036,8 @@
             doc.text(`Patient Name: ${storedFormData.patientName}`, margin, yPos); yPos += 8;
             doc.text(`IC/Passport Number: ${storedFormData.icPassport}`, margin, yPos); yPos += 8;
             doc.text(`Date of Birth: ${storedFormData.dateOfBirth}`, margin, yPos); yPos += 8;
+            doc.text(`Contact Number: ${storedFormData.patientEmail}`, margin, yPos); yPos += 8;
+            doc.text(`Contact Number: ${storedFormData.patientContact}`, margin, yPos); yPos += 8;
             doc.text(`Date of Procedure: ${storedFormData.dateOfProcedure}`, margin, yPos); yPos += 20;
 
             const consentSections = document.querySelectorAll('.consent-section');
@@ -1134,7 +1161,8 @@
                         icPassport: document.getElementById('icPassport').value,
                         dateOfBirth: document.getElementById('dateOfBirth').value,
                         dateOfProcedure: document.getElementById('dateOfProcedure').value,
-                        patientEmail: document.getElementById('patientEmail').value, 
+                        patientEmail: document.getElementById('patientEmail').value,
+                        patientContact: document.getElementById('patientContact').value, 
                         practitionerName: document.getElementById('practitionerName').value,
                         patientSignature: document.getElementById('patientSignatureCanvas').toDataURL(),
                         practitionerSignature: document.getElementById('practitionerSignatureCanvas').toDataURL()

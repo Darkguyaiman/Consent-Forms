@@ -13,7 +13,7 @@ function getConsentFormData() {
     if (!sheet) throw new Error('Sheet "K-Laser Blue Derma Consent Form" not found');
     
     const lastRow = sheet.getLastRow();
-    const lastCol = 9;
+    const lastCol = 11;
     if (lastRow < 2) return JSON.stringify([]);
     
     const range = sheet.getRange(2, 1, lastRow - 1, lastCol);
@@ -45,10 +45,12 @@ function getConsentFormData() {
         practitionerName: row[5] || '',
         patientSignatureLink: row[6] || '',
         practitionerSignatureLink: row[7] || '',
-        signedDocumentLink: row[8] || ''
+        signedDocumentLink: row[8] || '',
+        patientEmail: row[9] || '',
+        contactNumber: row[10] || ''
       };
     }).reverse();
-    
+
     return JSON.stringify(data);
   } catch (error) {
     throw new Error('Failed to fetch consent form data: ' + error.message);

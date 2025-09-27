@@ -920,7 +920,8 @@
             doc.setFontSize(12);
             doc.setFont(undefined, 'normal');
             doc.text(`Patient Name: ${formData.patientName}`, margin, yPos); yPos += 8;
-            doc.text(`Contact No: ${formData.contactNo}`, margin, yPos); yPos += 20;
+            doc.text(`Contact No: ${formData.contactNo}`, margin, yPos); yPos += 8;
+            doc.text(`Patient Email: ${formData.patientEmail}`, margin, yPos); yPos += 20;
 
             yPos = addSection(doc, 'Purpose',
                 'This consent form is to confirm that I, the undersigned, voluntarily agree to provide my testimonial regarding treatment with K-Laser. I understand that my testimonial may be used by Photomedic Solutions Sdn Bhd for educational, promotional, and marketing purposes.',

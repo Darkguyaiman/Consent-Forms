@@ -609,7 +609,19 @@
                             </label>
                             <input type="date" id="dateOfProcedure" name="dateOfProcedure" required>
                         </div>
+
+                        <div class="form-group full-width">
+                          <label for="patientEmail">
+                              <i class="fas fa-envelope icon"></i>
+                              Patient Email
+                          </label>
+                          <input type="email" id="patientEmail" name="patientEmail" required placeholder="Enter your email address">
+                          <small style="color: var(--medium-gray); font-size: 12px; margin-top: 5px; display: block;">
+                              A copy of the consent form will be sent to this email
+                          </small>
+                      </div>
                     </div>
+                    
 
                                         <div class="form-group full-width signature-section">
                         <label>
@@ -729,6 +741,47 @@
                 practitionerCanvas.parentElement.querySelector('.signature-controls').style.display = 'block';
                 initPractitionerSignature();
             });
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validateForm() {
+            const requiredFields = [
+                'patientName', 'icPassport', 'dateOfBirth', 'dateOfProcedure', 
+                'practitionerName', 'patientEmail'
+            ];
+            
+            for (let field of requiredFields) {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    alert(`Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                    element.focus();
+                    return false;
+                }
+            }
+            
+
+            const email = document.getElementById('patientEmail').value;
+            if (!validateEmail(email)) {
+                alert('Please enter a valid email address');
+                document.getElementById('patientEmail').focus();
+                return false;
+            }
+            
+            if (!isPatientSigned) {
+                alert('Please provide your digital signature');
+                return false;
+            }
+
+            if (!isPractitionerSigned) {
+                alert('Practitioner signature is required');
+                return false;
+            }
+
+            return true;
         }
 
         function initPatientSignature() {
@@ -1067,37 +1120,37 @@
 
             return doc.output('datauristring');         }
 
-        async function submitForm() {
-            if (!validateForm()) return;
+            async function submitForm() {
+                if (!validateForm()) return;
 
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
-            submitBtn.disabled = true;
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<div class="loading"></div> Submitting...';
+                submitBtn.disabled = true;
 
-            try {
+                try {
+                    storedFormData = {
+                        patientName: document.getElementById('patientName').value,
+                        icPassport: document.getElementById('icPassport').value,
+                        dateOfBirth: document.getElementById('dateOfBirth').value,
+                        dateOfProcedure: document.getElementById('dateOfProcedure').value,
+                        patientEmail: document.getElementById('patientEmail').value, 
+                        practitionerName: document.getElementById('practitionerName').value,
+                        patientSignature: document.getElementById('patientSignatureCanvas').toDataURL(),
+                        practitionerSignature: document.getElementById('practitionerSignatureCanvas').toDataURL()
+                    };
 
-                storedFormData = {
-                    patientName: document.getElementById('patientName').value,
-                    icPassport: document.getElementById('icPassport').value,
-                    dateOfBirth: document.getElementById('dateOfBirth').value,
-                    dateOfProcedure: document.getElementById('dateOfProcedure').value,
-                    practitionerName: document.getElementById('practitionerName').value,
-                    patientSignature: document.getElementById('patientSignatureCanvas').toDataURL(),
-                    practitionerSignature: document.getElementById('practitionerSignatureCanvas').toDataURL()
-                };
+                    storedFormData.pdfFile = generatePDFBase64();
 
-                storedFormData.pdfFile = generatePDFBase64();
+                    const result = await new Promise((resolve, reject) => {
+                        google.script.run
+                            .withSuccessHandler(resolve)
+                            .withFailureHandler(reject)
+                            .saveTreatmentConsentForm(storedFormData);
+                    });
 
-                const result = await new Promise((resolve, reject) => {
-                    google.script.run
-                        .withSuccessHandler(resolve)
-                        .withFailureHandler(reject)
-                        .saveTreatmentConsentForm(storedFormData);
-                });
-
-                if (result.success) {
-                    showModal('success', 'Form Submitted Successfully!', 'Your consent form has been saved. You can now download a PDF copy.');
+                    if (result.success) {
+                        showModal('success', 'Form Submitted Successfully!', 'Your consent form has been saved. A copy has been sent to your email and you can download a PDF copy.');
 
                     document.getElementById('consentForm').reset();
                     clearPatientSignature();

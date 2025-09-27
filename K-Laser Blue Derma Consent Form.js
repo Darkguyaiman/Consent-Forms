@@ -21,7 +21,7 @@ function saveTreatmentConsentForm(formData) {
         'Timestamp', 'Patient Name', 'IC/Passport Number', 'Date of Birth',
         'Date of Procedure', 'Practitioner Name',
         'Patient Signature Link', 'Practitioner Signature Link',
-        'Consent PDF Link', 'Patient Email'
+        'Consent PDF Link', 'Patient Email', 'Contact Number' 
       ]]);
     }
 
@@ -72,7 +72,8 @@ function saveTreatmentConsentForm(formData) {
       patientFileUrl,
       practitionerFileUrl,
       pdfFileUrl,
-      formData.patientEmail
+      formData.patientEmail,
+      formData.patientContact
     ]];
     sheet.getRange(sheet.getLastRow() + 1, 1, 1, newRow[0].length).setValues(newRow);
 
